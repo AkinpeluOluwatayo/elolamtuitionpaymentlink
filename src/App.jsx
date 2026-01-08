@@ -7,13 +7,11 @@ function App() {
     return (
         <Router>
             <Routes>
-
                 <Route path="/" element={<Payment />} />
                 <Route path="/payment" element={<Payment />} />
 
-Step 3: Verify the Frontend Code
-                <Route path="/payment-success" element={<Success />} />
 
+                <Route path="/payment-success" element={<Success />} />
 
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

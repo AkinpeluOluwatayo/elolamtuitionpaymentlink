@@ -14,7 +14,7 @@ const Paymentsuccess = () => {
         if (reference) {
             const verifyPayment = async () => {
                 try {
-                    // Small delay for smooth UI transition
+
                     await new Promise(resolve => setTimeout(resolve, 1500));
 
                     const response = await fetch(`${API_BASE_URL}/elolam/payments/verify`, {
@@ -37,7 +37,7 @@ const Paymentsuccess = () => {
     }, [reference, API_BASE_URL]);
 
     const handleDownload = () => {
-        // Correct path to your Spring Boot PDF endpoint
+
         const downloadUrl = `${API_BASE_URL}/elolam/payments/receipt/${reference}`;
 
         const link = document.createElement('a');
