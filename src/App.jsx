@@ -9,10 +9,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Payment />} />
                 <Route path="/payment" element={<Payment />} />
-
-
                 <Route path="/payment-success" element={<Success />} />
-
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
