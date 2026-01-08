@@ -6,7 +6,7 @@ const Paymentsuccess = () => {
     const [searchParams] = useSearchParams();
     const reference = searchParams.get('reference');
     const [status, setStatus] = useState('verifying');
-
+    const [verifyingMessage, setVerifyingMessage] = useState('Securing Transaction...');
 
     const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://elolampaymentlink-backend.onrender.com';
 
@@ -14,18 +14,55 @@ const Paymentsuccess = () => {
         if (reference) {
             const verifyPayment = async () => {
                 try {
+                    // Show helpful messages while waiting
+                    setTimeout(() => setVerifyingMessage('Waking up payment server...'), 5000);
+                    setTimeout(() => setVerifyingMessage('Verifying with Paystack...'), 30000);
+                    setTimeout(() => setVerifyingMessage('Almost done...'), 50000);
 
-                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    // Try to verify with retries (max 90 seconds total)
+                    let attempts = 0;
+                    const maxAttempts = 6;
+                    const delayBetweenAttempts = 15000; // 15 seconds
 
-                    const response = await fetch(`${API_BASE_URL}/elolam/payments/verify`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ reference })
-                    });
+                    while (attempts < maxAttempts) {
+                        try {
+                            console.log(`Verification attempt ${attempts + 1}/${maxAttempts}`);
 
-                    if (!response.ok) throw new Error("Verification failed");
+                            const controller = new AbortController();
+                            const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout per attempt
 
-                    setStatus('success');
+                            const response = await fetch(`${API_BASE_URL}/elolam/payments/verify`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ reference }),
+                                signal: controller.signal
+                            });
+
+                            clearTimeout(timeoutId);
+
+                            if (response.ok) {
+                                const data = await response.json();
+                                console.log('Verification successful:', data);
+                                setStatus('success');
+                                return;
+                            } else {
+                                console.log('Response not OK:', response.status);
+                            }
+                        } catch (fetchError) {
+                            console.log(`Attempt ${attempts + 1} failed:`, fetchError.message);
+                        }
+
+                        attempts++;
+
+                        if (attempts < maxAttempts) {
+                            // Wait before next attempt
+                            await new Promise(resolve => setTimeout(resolve, delayBetweenAttempts));
+                        }
+                    }
+
+                    // If all attempts failed
+                    throw new Error("All verification attempts failed");
+
                 } catch (err) {
                     console.error("Payment Verification Error:", err);
                     setStatus('error');
@@ -37,7 +74,6 @@ const Paymentsuccess = () => {
     }, [reference, API_BASE_URL]);
 
     const handleDownload = () => {
-
         const downloadUrl = `${API_BASE_URL}/elolam/payments/receipt/${reference}`;
 
         const link = document.createElement('a');
@@ -59,10 +95,16 @@ const Paymentsuccess = () => {
                         <div className="w-20 h-20 bg-sky-50 rounded-full mx-auto flex items-center justify-center animate-pulse">
                             <ShieldCheck className="text-sky-500" size={40} />
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Securing Transaction...</h2>
+                        <h2 className="text-2xl font-bold text-slate-800 tracking-tight">{verifyingMessage}</h2>
                         <p className="text-slate-400 text-sm leading-relaxed">
                             Please stay on this page while we finalize your <br/> official documentation.
                         </p>
+                        <div className="mt-4">
+                            <div className="w-full bg-slate-100 rounded-full h-2">
+                                <div className="bg-sky-500 h-2 rounded-full animate-pulse" style={{width: '60%'}}></div>
+                            </div>
+                            <p className="text-xs text-slate-400 mt-2">This may take up to 60 seconds...</p>
+                        </div>
                     </div>
                 )}
 

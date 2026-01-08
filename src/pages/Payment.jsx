@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, EffectFade } from 'swiper/modules';
-import { CreditCard, ShieldCheck, Phone, Mail, ArrowLeft, Info } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { CreditCard, ShieldCheck, Phone, Mail, Info } from 'lucide-react';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -10,6 +9,24 @@ import 'swiper/css/effect-fade';
 
 const Payment = () => {
     const paystackLink = "https://paystack.shop/pay/children-tuition-fees";
+    const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://elolampaymentlink-backend.onrender.com';
+
+    // Wake up the backend when page loads
+    useEffect(() => {
+        const wakeUpBackend = async () => {
+            try {
+                console.log('Waking up backend server...');
+                await fetch(`${API_BASE_URL}/elolam/payments/health`, {
+                    method: 'GET',
+                });
+                console.log('Backend is awake!');
+            } catch (err) {
+                console.log('Backend wake-up in progress...');
+            }
+        };
+
+        wakeUpBackend();
+    }, [API_BASE_URL]);
 
     return (
         <div className="min-h-screen bg-[#F0F9FF] relative overflow-hidden flex flex-col items-center py-8 px-4 font-sans">
@@ -20,8 +37,6 @@ const Payment = () => {
             </div>
 
             <div className="w-full max-w-4xl flex flex-col items-center mb-12">
-
-
                 <div className="flex justify-center w-full">
                     <img
                         src="/images/logo.png"
