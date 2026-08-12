@@ -79,7 +79,7 @@ const Payment = () => {
                     </div>
 
                     <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">
-                        Tuition & Rehabilitation Fees
+                        Registration & Assessment Fees
                     </h2>
 
                     <p className="text-slate-600 mb-12 max-w-md mx-auto leading-relaxed text-lg">
@@ -110,7 +110,7 @@ const Payment = () => {
                     </div>
                     <div className="text-left">
                         <p className="text-[10px] text-slate-400 uppercase font-black tracking-tighter">Emergency Contact</p>
-                        <p className="text-slate-700 font-bold text-sm">+234 813 797 3130</p>
+                        <p className="text-slate-700 font-bold text-sm">+234 812 264 6941</p>
                     </div>
                 </div>
 
@@ -121,7 +121,7 @@ const Payment = () => {
                     <div className="text-left">
                         <p className="text-[10px] text-slate-400 uppercase font-black tracking-tighter">Email Support</p>
                         <p className="text-slate-700 font-bold text-sm truncate max-w-[180px] md:max-w-full">
-                            elolamspecialhome@gmail.com
+                            elolamspecialandrehabilitation@gmail.com
                         </p>
                     </div>
                 </div>
